@@ -1,5 +1,5 @@
 from tkinter import Tk, Canvas
-from classes.geometry import Point, Line
+from classes.geometry import Line, Cell
 
 class Window:
     def __init__(self, width=500, height=400, title='boots.dev Maze Solver'):
@@ -7,23 +7,26 @@ class Window:
         self.__height = height
         self.__running = False
         self.__title = title
-        self.__setup()
+        self.__root, self.__canvas = self.__setup()
 
     def __setup(self):
-        self.__root = Tk()
+        root = Tk()
         # setup window for the application
-        self.__root.title( self.__title )
+        root.title( self.__title )
 
-        self.__root.protocol("WM_DELETE_WINDOW", self.__close)
+        root.protocol("WM_DELETE_WINDOW", self.__close)
 
         # create the canvas which will contain geometry objects
         # https://tkinter-docs.readthedocs.io/en/latest/widgets/canvas.html#
-        self.__canvas = Canvas(self.__root, width=self.__width, height=self.__height)
+        canvas = Canvas(root, width=self.__width, height=self.__height)
 
         # calling pack will acutally place the child element on the root canvas
         # pack has some options for positioning
         # https://docs.python.org/3/library/tkinter.html#the-packer         
-        self.__canvas.pack()
+        canvas.pack()
+
+        return root, canvas
+
 
     def __close(self):
         self.__running = False
@@ -34,6 +37,12 @@ class Window:
 
     def draw_line(self, line: Line, fill_color):
         line.draw_line(self.__canvas, fill_color=fill_color)
+
+    def draw_cell(self, cell: Cell):
+        cell.draw()
+
+    def get_canvas(self):
+        return self.__canvas
 
     def wait_for_close(self):
         self.__running = True
