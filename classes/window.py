@@ -1,4 +1,5 @@
 from tkinter import Tk, Canvas
+from classes.geometry import Point, Line
 
 class Window:
     def __init__(self, width=500, height=400, title='boots.dev Maze Solver'):
@@ -30,6 +31,9 @@ class Window:
     def __redraw(self):
         self.__root.update_idletasks()
         self.__root.update()    
+
+    def draw_line(self, line: Line, fill_color):
+        line.draw_line(self.__canvas, fill_color=fill_color)
 
     def wait_for_close(self):
         self.__running = True
