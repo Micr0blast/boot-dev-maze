@@ -16,11 +16,26 @@ def generate_test_cells(window: Window):
     for cell in cells:
         window.draw_cell(cell)
 
+def generate_test_cell_lines(window: Window):
+    width, height = 40, 40
+    coordinate_list = zip(range(40, 460, 42), [150 for x in range(40,440,40)])
+    point_pairs_list = [(Point(x, y), Point(x + width, y+ height)) for x,y in coordinate_list]
+    cell_list= [Cell(p[0], p[1], window.get_canvas()) for p in point_pairs_list] 
+    
+    for i in range( len(cell_list)-1):
+        cell = cell_list[i]
+        cell.has_left_wall = False
+        cell.has_right_wall = False
+        window.draw_cell(cell)
+        cell.draw_move(cell_list[i + 1], undo=False)
+    cell_list[-1].has_left_wall = False
+    window.draw_cell(cell_list[-1])
+
 def main():
     window = Window()
-    generate_test_lines(window)
-    generate_test_cells(window)    
-
+    # generate_test_lines(window)
+    # generate_test_cells(window)    
+    generate_test_cell_lines(window)
     window.wait_for_close()
 
 if __name__ == "__main__":

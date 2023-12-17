@@ -30,7 +30,10 @@ class Cell:
         self._y2 = p2.y
         self._canvas = canvas
         
-    def __calculate_cell_points(self):
+    def __get_cell_points(self) -> list[Point]:
+        """
+            Calculates the necessary points for the cell walls
+        """
         p1 = Point(self._x1, self._y1)
         p2 = Point(self._x2, self._y1)
         p3 = Point(self._x1, self._y2)
@@ -38,8 +41,11 @@ class Cell:
 
         return p1, p2, p3, p4
     
-    def __calculate_cell_walls(self):
-        p1, p2, p3, p4 = self.__calculate_cell_points()
+    def __get_cell_walls(self) -> list[Line]:
+        """
+            Calculates the Lines of the cell walls
+        """
+        p1, p2, p3, p4 = self.__get_cell_points()
 
         left_wall = Line(p1, p3)
         top_wall = Line(p1, p2)
@@ -47,8 +53,11 @@ class Cell:
         bottom_wall = Line(p3, p4)
         return left_wall, top_wall, right_wall, bottom_wall
     
-    def draw(self):
-        left_wall, top_wall, right_wall, bottom_wall = self.__calculate_cell_walls()
+    def draw(self) -> None:
+        """
+            draws the cell on the canvas using the Lines
+        """
+        left_wall, top_wall, right_wall, bottom_wall = self.__get_cell_walls()
 
         if self.has_left_wall:
             left_wall.draw_line(self._canvas, "white")
@@ -58,6 +67,23 @@ class Cell:
             right_wall.draw_line(self._canvas, "white")
         if self.has_bottom_wall:
             bottom_wall.draw_line(self._canvas, "white")
+
+    def get_center_point(self) -> Point:
+        """
+            Calculates the center Point for drawing
+        """
+        center_x = (self._x2 + self._x1) // 2
+        center_y = (self._y2 + self._y1) // 2
+        return Point(center_x, center_y)
+        
+
+    def draw_move(self, to_cell, undo=False) -> None:
+        move = Line(
+            self.get_center_point(), 
+            to_cell.get_center_point()
+            )
+        fill_color = 'red' if undo else 'gray'
+        move.draw_line(self._canvas, fill_color=fill_color)
 
 
         
