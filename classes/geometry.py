@@ -58,7 +58,8 @@ class Cell:
             draws the cell on the canvas using the Lines
         """
         left_wall, top_wall, right_wall, bottom_wall = self.__get_cell_walls()
-
+        print(f'Drawing Walls {self.has_left_wall} {self.has_top_wall}')
+        
         if self.has_left_wall:
             left_wall.draw_line(self._canvas, "white")
         if self.has_top_wall:
@@ -85,7 +86,8 @@ class Cell:
         fill_color = 'red' if undo else 'gray'
         move.draw_line(self._canvas, fill_color=fill_color)
 
-
+    def __str__(self):
+        return f"{self._x1} {self._y1}"
         
 
         

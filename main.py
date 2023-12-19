@@ -1,5 +1,5 @@
 from tkinter import Tk, BOTH, Canvas
-from classes.window import Window
+from classes.window import Window, Maze
 from classes.geometry import Point, Line, Cell
 
 def generate_test_lines(window: Window):
@@ -31,11 +31,24 @@ def generate_test_cell_lines(window: Window):
     cell_list[-1].has_left_wall = False
     window.draw_cell(cell_list[-1])
 
+def generate_test_maze(window: Window):
+    maze = Maze(
+        x1=50,
+        y1=50,
+        num_rows=10,
+        num_cols=12,
+        cell_size_x=20,
+        cell_size_y=20, 
+        window=window
+        )
+    
+
 def main():
     window = Window()
     # generate_test_lines(window)
     # generate_test_cells(window)    
-    generate_test_cell_lines(window)
+    # generate_test_cell_lines(window)
+    generate_test_maze(window)
     window.wait_for_close()
 
 if __name__ == "__main__":
