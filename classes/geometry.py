@@ -16,7 +16,7 @@ class Line:
             fill=fill_color, width =2)
         
 class Cell:
-    def __init__(self, p1: Point, p2: Point, canvas: Canvas):
+    def __init__(self, p1: Point, p2: Point, canvas: Canvas = None):
         self.has_left_wall = True
         self.has_top_wall = True
         self.has_right_wall = True
@@ -60,14 +60,15 @@ class Cell:
         left_wall, top_wall, right_wall, bottom_wall = self.__get_cell_walls()
         print(f'Drawing Walls {self.has_left_wall} {self.has_top_wall}')
         
-        if self.has_left_wall:
-            left_wall.draw_line(self._canvas, "white")
-        if self.has_top_wall:
-            top_wall.draw_line(self._canvas, "white")
-        if self.has_right_wall:
-            right_wall.draw_line(self._canvas, "white")
-        if self.has_bottom_wall:
-            bottom_wall.draw_line(self._canvas, "white")
+        if self._canvas is not None:
+            if self.has_left_wall:
+                left_wall.draw_line(self._canvas, "white")
+            if self.has_top_wall:
+                top_wall.draw_line(self._canvas, "white")
+            if self.has_right_wall:
+                right_wall.draw_line(self._canvas, "white")
+            if self.has_bottom_wall:
+                bottom_wall.draw_line(self._canvas, "white")
 
     def get_center_point(self) -> Point:
         """
