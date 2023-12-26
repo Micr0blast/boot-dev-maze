@@ -76,6 +76,15 @@ class Maze:
     def _create_cells(self):
         self._cells = []
         canvas = self._win.get_canvas() if self._win else None
+        
+        if self._num_cols == 0 or self._num_rows == 0:
+            raise ValueError("Cannot create Maze without rows or columns") 
+        if self._cell_size_x == 0 or self._cell_size_y == 0:
+            raise ValueError("Cannot create maze with cell width or length of 0")
+        
+        if self._x1 < 0 or self._y1 < 0:
+            raise ValueError("Cannot create maze out of bounds")
+
         for i in range(self._num_rows):
             row = []
             for j in range(self._num_cols):
