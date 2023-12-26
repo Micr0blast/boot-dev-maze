@@ -1,4 +1,5 @@
 from tkinter import Canvas
+import logging
 class Point:
     def __init__(self, x, y):
         self.x = x
@@ -58,18 +59,44 @@ class Cell:
             draws the cell on the canvas using the Lines
         """
         left_wall, top_wall, right_wall, bottom_wall = self.__get_cell_walls()
-        print(f'Drawing Walls {self.has_left_wall} {self.has_top_wall}')
+        logging.info(f'Drawing Walls {self.has_left_wall} {self.has_top_wall}')
         
-        if self._canvas is not None:
+        if self._canvas:
             if self.has_left_wall:
                 left_wall.draw_line(self._canvas, "white")
+            else:
+                left_wall.draw_line(self._canvas, "black")
+            
             if self.has_top_wall:
                 top_wall.draw_line(self._canvas, "white")
+            else:
+                top_wall.draw_line(self._canvas, "black") 
+            
             if self.has_right_wall:
                 right_wall.draw_line(self._canvas, "white")
+            else:
+                right_wall.draw_line(self._canvas, "black")
+            
             if self.has_bottom_wall:
                 bottom_wall.draw_line(self._canvas, "white")
+            else:
+                bottom_wall.draw_line(self._canvas, "black")
 
+
+    def set_cell_walls(self, bin) -> None:
+        """
+            sets the cell walls using a binary string with order left,top,right,bottom 
+        """
+
+        self.has_left_wall = True if bin & 0b1000 == 0b1000 else False
+        self.has_top_wall = True if bin & 0b0100 == 0b0100 else False
+        self.has_right_wall = True if bin & 0b0010 == 0b0010 else False
+        self.has_bottom_wall = True if bin & 0b0001 == 0b0001 else False
+
+        self.draw()
+
+
+    
     def get_center_point(self) -> Point:
         """
             Calculates the center Point for drawing

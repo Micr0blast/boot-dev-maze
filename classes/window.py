@@ -47,10 +47,11 @@ class Window:
         return self.__canvas
 
     def wait_for_close(self):
+        
         self.__running = True
         while self.__running:
             self.redraw() 
-
+        logging.info("Exited application")
 
 class Maze:
     def __init__(
@@ -72,6 +73,7 @@ class Maze:
         self._win = window
 
         self._create_cells()
+        self._break_entrance_and_exit_walls()
 
     def _create_cells(self):
         self._cells = []
@@ -112,3 +114,13 @@ class Maze:
     def _animate(self):
         self._win.redraw()
         time.sleep(0.5)
+
+    def _break_entrance_and_exit_walls(self):
+        # top left
+        entry = self._cells[0][0]
+        # bottom right
+        exit = self._cells[-1][-1]
+
+        entry.set_cell_walls(0b0000)
+        
+        exit.set_cell_walls(0b0000)

@@ -20,6 +20,56 @@ class Test(unittest.TestCase):
         )
 
         
+    def test_maze_entry_and_exit_broken(self):
+        maze = Maze(0,0, 3, 3, 10, 10)
+        self.assertEqual(
+            maze._cells[0][0].has_left_wall,
+            False,
+            "Entry has left wall"
+        )
+
+        self.assertEqual(
+            maze._cells[0][0].has_top_wall,
+            False,
+           "Entry has top wall"
+        )
+
+        self.assertEqual(
+            maze._cells[0][0].has_right_wall,
+            False,
+            "Entry has right wall"
+        )
+
+        self.assertEqual(
+            maze._cells[0][0].has_bottom_wall,
+            False,
+            "Entry has bottom wall"
+        )
+
+        self.assertEqual(
+            maze._cells[-1][-1].has_left_wall,
+            False,
+            "exit has left wall"
+        )
+
+        self.assertEqual(
+            maze._cells[-1][-1].has_top_wall,
+            False,
+           "exit has top wall"
+        )
+
+        self.assertEqual(
+            maze._cells[-1][-1].has_right_wall,
+            False,
+            "exit has right wall"
+        )
+
+        self.assertEqual(
+            maze._cells[-1][-1].has_bottom_wall,
+            False,
+            "exit has bottom wall"
+        )
+
 
 
     def test_maze_cannot_create_without_cells(self):

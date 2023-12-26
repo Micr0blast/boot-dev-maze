@@ -1,4 +1,5 @@
 from tkinter import Tk, BOTH, Canvas
+import logging
 from classes.window import Window, Maze
 from classes.geometry import Point, Line, Cell
 
@@ -35,8 +36,8 @@ def generate_test_maze(window: Window):
     maze = Maze(
         x1=50,
         y1=50,
-        num_rows=10,
-        num_cols=12,
+        num_rows=3,
+        num_cols=3,
         cell_size_x=20,
         cell_size_y=20, 
         window=window
@@ -44,6 +45,8 @@ def generate_test_maze(window: Window):
     
 
 def main():
+    logging.basicConfig(filename="app.log", filemode="w", level=logging.DEBUG)
+    logging.info('Started -- Creating window')
     window = Window()
     # generate_test_lines(window)
     # generate_test_cells(window)    
