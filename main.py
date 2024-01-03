@@ -53,7 +53,8 @@ def main():
     # generate_test_cells(window)    
     # generate_test_cell_lines(window)
     maze = generate_test_maze(window)
-    maze.solve()
+    # maze.solve()
+    maze.solve_BFS()
     window.wait_for_close()
 
 if __name__ == "__main__":

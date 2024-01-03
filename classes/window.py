@@ -186,6 +186,10 @@ class Maze:
     def solve(self) -> bool:
         return self._solve_r(i=0, j=0)
     
+    def solve_BFS(self):
+        path = self._solve_BFS(0,0)
+        self._draw_backtracked_path(path)
+    
     def _solve_r(self, i, j):
         self._animate()
         logging.info(f"SOLVING: Visiting {i} {j}")
@@ -206,7 +210,47 @@ class Maze:
 
         return False
 
+    def _solve_BFS(self, i,j):
+        
+        queue = [(i,j)]
+        paths = {(i,j): None}
+        while queue:
+            self._animate()
+            current = queue.pop()
+            next_i, next_j = current
+            next_c = self._cells[next_i][next_j]
+            next_c.visited = True
+            if (next_i, next_j) == (self._num_rows -1, self._num_cols -1):
+                path = []
+                while current is not None:
+                    path.append(current)
+                    current = paths[current]
+                # path.reverse()
+                return path
+            
 
+            neighbours = self._get_neighbours_without_borders(next_i, next_j)
+                           
+            for neigh_i, neigh_j in neighbours:
+                neighbour = self._cells[neigh_i][neigh_j]
+
+                next_c.draw_move(neighbour)
+                queue.insert(0, (neigh_i, neigh_j))
+                paths[(neigh_i, neigh_j)] = current
+
+        return None
+
+    def _draw_backtracked_path(self, path):
+        logging.info(f'BFS: Drawing path {path}')
+        if path is None:
+            return None
+        for idx, cell in enumerate(path[:-1]):
+            self._animate()
+            i, j = cell
+            current = self._cells[i][j]
+            n_i, n_j = path[idx + 1]
+            next_c = self._cells[n_i][n_j]
+            current.draw_move(next_c, True)
 
     def _get_neighbours(self, i, j) -> list:
         to_visit = []
