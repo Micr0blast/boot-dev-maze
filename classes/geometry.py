@@ -16,6 +16,7 @@ class Line:
             self.p_2.x, self.p_2.y,
             fill=fill_color, width =2)
         
+         
 class Cell:
     def __init__(self, p1: Point, p2: Point, canvas: Canvas = None, visited: bool=False):
         self.has_left_wall = True
@@ -50,9 +51,9 @@ class Cell:
         p1, p2, p3, p4 = self.__get_cell_points()
 
         left_wall = Line(p1, p3)
-        top_wall = Line(p1, p2)
+        top_wall = Line(p3, p4)
         right_wall = Line(p2, p4)
-        bottom_wall = Line(p3, p4)
+        bottom_wall = Line(p1, p2)
         return left_wall, top_wall, right_wall, bottom_wall
     
     def draw(self) -> None:

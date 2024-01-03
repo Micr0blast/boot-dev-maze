@@ -83,6 +83,7 @@ class Maze:
         self._break_walls_r(0, 0)
         self._reset_cells_visited()
 
+
     def _create_cells(self):
         self._cells = []
         canvas = self._win.get_canvas() if self._win else None
@@ -120,8 +121,11 @@ class Maze:
             self._animate()
 
     def _animate(self):
+        if self._win is None:
+            return 
+        
         self._win.redraw()
-        time.sleep(0.5)
+        time.sleep(0.1)
 
     def _break_entrance_and_exit_walls(self):
         # top left
@@ -134,33 +138,11 @@ class Maze:
         exit.set_cell_walls(0b0000)
 
     def _break_walls_r(self, i, j):
-        logging.info(f'Visiting {i} {j}')
+        logging.info(f'BREAKING: Visiting {i} {j}')
         current_cell = self._cells[i][j]
         current_cell.visited = True
         while True:
-            to_visit = []
-            # check cells
-            # to left
-            if i > 0:
-                left = self._cells[i-1][j]
-                if not left.visited:
-                    to_visit.append((i-1, j))
-            # to right
-            if i < self._num_rows - 1:
-                right = self._cells[i+1][j]
-                if not right.visited:
-                    to_visit.append((i+1, j))
-            # to top
-            if j < self._num_cols - 1:
-                top = self._cells[i][j+1]
-                if not top.visited:
-                    to_visit.append((i, j+1))
-            # to bottom
-            if j > 0:
-                bottom = self._cells[i][j-1]
-                if not bottom.visited:
-                    to_visit.append((i, j-1))
-
+            to_visit = self._get_neighbours(i, j)
             # if no directions available 
             if len(to_visit) == 0:
                 self._draw_cell(i, j)
@@ -172,28 +154,26 @@ class Maze:
                 logging.info(f'Chose {new_i} {new_j}')
                 next_cell = self._cells[new_i][new_j]
 
-                if new_i < i:
+                if new_i == i-1:
                     current_cell.has_left_wall  = False
                     next_cell.has_right_wall = False
 
-                if new_i > i:
+                if new_i == i +1:
                     current_cell.has_right_wall = False
                     next_cell.has_left_wall = False
-                if new_j > j:
+                if new_j == j +1:
 
-                    current_cell.has_bottom_wall = False
-                    next_cell.has_top_wall = False
-                if new_j < j:
                     current_cell.has_top_wall = False
                     next_cell.has_bottom_wall = False
+                if new_j == j-1:
+                    current_cell.has_bottom_wall = False
+                    next_cell.has_top_wall = False
 
-                self._draw_cell(i,j)
-                self._draw_cell(new_i,new_j)
+
 
                 self._break_walls_r(new_i, new_j)
         
         return None
-    
 
     
     def _reset_cells_visited(self):
@@ -203,4 +183,80 @@ class Maze:
                 cell.visited = False
         return None
 
- 
+    def solve(self) -> bool:
+        return self._solve_r(i=0, j=0)
+    
+    def _solve_r(self, i, j):
+        self._animate()
+        logging.info(f"SOLVING: Visiting {i} {j}")
+        current = self._cells[i][j]
+        current.visited = True
+        if i == self._num_rows - 1 and j ==self._num_cols - 1:
+            return True
+
+        to_visit = self._get_neighbours_without_borders(i,j)
+        for next_i, next_j in to_visit:
+            next_c = self._cells[next_i][next_j]
+            current.draw_move(next_c)
+        
+            is_on_path = self._solve_r(next_i, next_j)
+            if is_on_path:
+                return True
+            current.draw_move(next_c, undo=True)
+
+        return False
+
+
+
+    def _get_neighbours(self, i, j) -> list:
+        to_visit = []
+        # check cells
+        # to left
+        if i > 0:
+            left = self._cells[i-1][j]
+            if not left.visited:
+                to_visit.append((i-1, j))
+        # to right
+        if i < self._num_rows - 1:
+            right = self._cells[i+1][j]
+            if not right.visited:
+                to_visit.append((i+1, j))
+        # to top
+        if j < self._num_cols - 1:
+            top = self._cells[i][j+1]
+            if not top.visited:
+                to_visit.append((i, j+1))
+        # to bottom
+        if j > 0:
+            bottom = self._cells[i][j-1]
+            if not bottom.visited:
+                to_visit.append((i, j-1))
+
+        return to_visit
+    
+    def _get_neighbours_without_borders(self, i, j) -> list:
+        to_visit = []
+        current = self._cells[i][j]
+        # check cells
+        # to left
+        if i > 0:
+            left = self._cells[i-1][j]
+            if not left.visited and not current.has_left_wall:
+                to_visit.append((i-1, j))
+        # to right
+        if i < self._num_rows - 1:
+            right = self._cells[i+1][j]
+            if not right.visited and not current.has_right_wall:
+                to_visit.append((i+1, j))
+        # to top
+        if j < self._num_cols - 1:
+            top = self._cells[i][j+1]
+            if not top.visited and not current.has_top_wall:
+                to_visit.append((i, j+1))
+        # to bottom
+        if j > 0:
+            bottom = self._cells[i][j-1]
+            if not bottom.visited and not current.has_bottom_wall:
+                to_visit.append((i, j-1))
+        logging.info(f'Got Neighbours without borders:\n{to_visit}')
+        return to_visit

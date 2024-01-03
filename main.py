@@ -36,12 +36,13 @@ def generate_test_maze(window: Window):
     maze = Maze(
         x1=50,
         y1=50,
-        num_rows=5,
-        num_cols=3,
+        num_rows=12,
+        num_cols=12,
         cell_size_x=20,
         cell_size_y=20, 
         window=window
         )
+    return maze
     
 
 def main():
@@ -51,7 +52,8 @@ def main():
     # generate_test_lines(window)
     # generate_test_cells(window)    
     # generate_test_cell_lines(window)
-    generate_test_maze(window)
+    maze = generate_test_maze(window)
+    maze.solve()
     window.wait_for_close()
 
 if __name__ == "__main__":
