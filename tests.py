@@ -18,6 +18,17 @@ class Test(unittest.TestCase):
             num_cols,
             'Wrong number of cols created'
         )
+    
+    def test_maze_resets_cells_after_path_generation(self):
+        num_cols = 5
+        num_rows = 5
+        maze = Maze(0,0, num_rows, num_cols, 10, 10)
+        visited_cells = [cell for row in maze._cells for cell in row if cell.visited]
+        self.assertEqual(
+            len(visited_cells),
+            0,
+            "Cells not reset after path generation"
+        )
 
         
     def test_maze_entry_and_exit_broken(self):
