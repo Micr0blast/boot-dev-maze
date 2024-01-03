@@ -1,7 +1,9 @@
 from tkinter import Tk, Canvas
 import time
-from classes.geometry import Line, Cell, Point
 import logging
+import random
+from classes.geometry import Line, Cell, Point
+
 
 class Window:
     def __init__(self, width=500, height=400, title='boots.dev Maze Solver'):
@@ -62,7 +64,8 @@ class Maze:
             num_cols: int,
             cell_size_x:int ,
             cell_size_y:int,
-            window: Window = None
+            window: Window = None,
+            seed: int = None
         ):
         self._x1 = x1
         self._y1 = y1
@@ -71,9 +74,13 @@ class Maze:
         self._cell_size_x = cell_size_x
         self._cell_size_y = cell_size_y
         self._win = window
+        self._seed = seed if seed is not None else 0
+
+        random.seed(self._seed)
 
         self._create_cells()
         self._break_entrance_and_exit_walls()
+        self._break_walls_r(0, 0)
 
     def _create_cells(self):
         self._cells = []
@@ -124,3 +131,63 @@ class Maze:
         entry.set_cell_walls(0b0000)
         
         exit.set_cell_walls(0b0000)
+
+    def _break_walls_r(self, i, j):
+        logging.info(f'Visiting {i} {j}')
+        current_cell = self._cells[i][j]
+        current_cell.visited = True
+        while True:
+            to_visit = []
+            # check cells
+            # to left
+            if i > 0:
+                left = self._cells[i-1][j]
+                if not left.visited:
+                    to_visit.append((i-1, j))
+            # to right
+            if i < self._num_rows - 1:
+                right = self._cells[i+1][j]
+                if not right.visited:
+                    to_visit.append((i+1, j))
+            # to top
+            if j < self._num_cols - 1:
+                top = self._cells[i][j+1]
+                if not top.visited:
+                    to_visit.append((i, j+1))
+            # to bottom
+            if j > 0:
+                bottom = self._cells[i][j-1]
+                if not bottom.visited:
+                    to_visit.append((i, j-1))
+
+            # if no directions available 
+            if len(to_visit) == 0:
+                self._draw_cell(i, j)
+                break
+            # choose random cell and breka walls
+            else:
+
+                new_i, new_j = random.choice(to_visit)
+                logging.info(f'Chose {new_i} {new_j}')
+                next_cell = self._cells[new_i][new_j]
+
+                if new_i < i:
+                    current_cell.has_left_wall  = False
+                    next_cell.has_right_wall = False
+
+                if new_i > i:
+                    current_cell.has_right_wall = False
+                    next_cell.has_left_wall = False
+                if new_j > j:
+
+                    current_cell.has_bottom_wall = False
+                    next_cell.has_top_wall = False
+                if new_j < j:
+                    current_cell.has_top_wall = False
+                    next_cell.has_bottom_wall = False
+
+                self._draw_cell(i,j)
+                self._draw_cell(new_i,new_j)
+
+                self._break_walls_r(new_i, new_j)
+

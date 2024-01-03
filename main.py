@@ -36,7 +36,7 @@ def generate_test_maze(window: Window):
     maze = Maze(
         x1=50,
         y1=50,
-        num_rows=3,
+        num_rows=5,
         num_cols=3,
         cell_size_x=20,
         cell_size_y=20, 

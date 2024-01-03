@@ -17,11 +17,12 @@ class Line:
             fill=fill_color, width =2)
         
 class Cell:
-    def __init__(self, p1: Point, p2: Point, canvas: Canvas = None):
+    def __init__(self, p1: Point, p2: Point, canvas: Canvas = None, visited: bool=False):
         self.has_left_wall = True
         self.has_top_wall = True
         self.has_right_wall = True
         self.has_bottom_wall = True
+        self.visited = visited
 
         # alternative idea, represent wall as 4bit binary 0000, left,top,right,bottom
 
@@ -59,7 +60,7 @@ class Cell:
             draws the cell on the canvas using the Lines
         """
         left_wall, top_wall, right_wall, bottom_wall = self.__get_cell_walls()
-        logging.info(f'Drawing Walls {self.has_left_wall} {self.has_top_wall}')
+        logging.info(f'Drawing Walls left {self.has_left_wall} top {self.has_top_wall} right {self.has_right_wall} bottom {self.has_bottom_wall}')
         
         if self._canvas:
             if self.has_left_wall:
@@ -95,7 +96,7 @@ class Cell:
 
         self.draw()
 
-
+    
     
     def get_center_point(self) -> Point:
         """
